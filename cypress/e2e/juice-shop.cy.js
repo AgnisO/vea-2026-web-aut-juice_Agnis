@@ -142,12 +142,19 @@ describe('Juice-shop scenarios', () => {
     });
 
 
-    /*
+
     it.only('Validate product card amount', () => {
+      // Validate that the default amount of cards is 12
       cy.get('mat-grid-tile').should('have.length', 12);
-      cy.get('#mat-paginator-page-size-label-1').select('24');
+      // Change items per page (at the bottom of page) to 24
+      cy.get('.mat-mdc-paginator-touch-target').click();
+      cy.get('#mat-option-1').click();
+      // Validate that the amount of cards is 24
       cy.get('mat-grid-tile').should('have.length', 24);
-      cy.get('[aria-label="Items per page:"]').select('36');
+      // Change items per page (at the bottom of page) to 36
+      cy.get('.mat-mdc-paginator-touch-target').click();
+      cy.get('#mat-option-2').click();
+      // Validate that the amount of cards is 36
       cy.get('mat-grid-tile').should('have.length', 36);
     });
 
@@ -157,7 +164,7 @@ describe('Juice-shop scenarios', () => {
 
 
     });
-    */
+
 
 
   });
