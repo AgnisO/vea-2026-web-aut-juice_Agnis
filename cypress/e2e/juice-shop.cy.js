@@ -1,6 +1,8 @@
+import { BasketPage } from '../pageObjects/basketPage';
 import { HomePage } from '../pageObjects/HomePage';
 import { LoginPage } from '../pageObjects/loginPage';
 import { RegistrationPage } from '../pageObjects/registrationPage';
+import { SelectAddressPage } from '../pageObjects/selectAddressPage';
 
 describe('Juice-shop scenarios', () => {
   context('Without auto login', () => {
@@ -143,7 +145,7 @@ describe('Juice-shop scenarios', () => {
 
 
 
-    it.only('Validate product card amount', () => {
+    it('Validate product card amount', () => {
       // Validate that the default amount of cards is 12
       cy.get('mat-grid-tile').should('have.length', 12);
       // Change items per page (at the bottom of page) to 24
@@ -158,9 +160,53 @@ describe('Juice-shop scenarios', () => {
       cy.get('mat-grid-tile').should('have.length', 36);
     });
 
-    it('Buy girly T-shirt', () => {
+    it.only('Buy girly T-shirt', () => {
 
+      // Click on search icon
+      HomePage.searchIcon.click();
+      // Search for Girlie
+      HomePage.searchInputField.type('Girlie{enter}');
+      // Add to basket "Girlie"
+      cy.get('[aria-label = "Add to Basket"]').click();
+      // Click on "Your Basket" button
+      cy.get('[aria-label = "Show the shopping cart"]').click();
+      // Create page object - BasketPage
+      //Created
 
+      // Click on "Checkout" button
+      BasketPage.checkoutField.click();
+      // Create page object - SelectAddressPage
+      //Created
+
+      // Select address containing "United Fakedom"
+      SelectAddressPage.selectAddressField.click();
+      // Click Continue button
+      cy.get('[aria-label = "Proceed to payment selection"]').click();
+      // Create page object - DeliveryMethodPage
+      //Created
+
+      // Select delivery speed Standard Delivery
+      cy.get('#mat-radio-45').click();
+      // Click Continue button
+      cy.get('[aria-label = "Proceed to delivery method selection"]').click();
+      // Create page object - PaymentOptionsPage
+      //Created
+
+      // Select card that ends with "5678"
+      //cy.get('.mat-mdc-cell mdc-data-table__cell cdk-cell cdk-column-Number mat-column-Number ng-star-inserted').should('have.value', "************5678");
+      cy.get('#mat-radio-46').click();
+      // Click Continue button
+      cy.get('[aria-label = "Proceed to review"]').click();
+      // Create page object - OrderSummaryPage
+      //Created
+
+      // Click on "Place your order and pay"
+      cy.get('[aria-label = "Complete your purchase"]').click();
+      // Create page object - OrderCompletionPage
+      //Created
+
+      // Validate confirmation - "Thank you for your purchase!"
+      cy.get('.confirmation').should('contain.text', 'Thank you for your purchase!');
 
 
     });
