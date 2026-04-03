@@ -1,7 +1,10 @@
 import { BasketPage } from '../pageObjects/basketPage';
+import { CreateAddressPage } from '../pageObjects/createAddressPage';
 import { HomePage } from '../pageObjects/HomePage';
 import { LoginPage } from '../pageObjects/loginPage';
 import { RegistrationPage } from '../pageObjects/registrationPage';
+import { SavedAddressesPage } from '../pageObjects/saveAddressPage';
+import { SavedPaymentMethodsPage } from '../pageObjects/savePaymentMethodsPage';
 import { SelectAddressPage } from '../pageObjects/selectAddressPage';
 
 describe('Juice-shop scenarios', () => {
@@ -160,8 +163,7 @@ describe('Juice-shop scenarios', () => {
       cy.get('mat-grid-tile').should('have.length', 36);
     });
 
-    it.only('Buy girly T-shirt', () => {
-
+    it('Buy girly T-shirt', () => {
       // Click on search icon
       HomePage.searchIcon.click();
       // Search for Girlie
@@ -170,45 +172,70 @@ describe('Juice-shop scenarios', () => {
       cy.get('[aria-label = "Add to Basket"]').click();
       // Click on "Your Basket" button
       cy.get('[aria-label = "Show the shopping cart"]').click();
-      // Create page object - BasketPage
-      //Created
-
       // Click on "Checkout" button
       BasketPage.checkoutField.click();
-      // Create page object - SelectAddressPage
-      //Created
-
       // Select address containing "United Fakedom"
       SelectAddressPage.selectAddressField.click();
       // Click Continue button
       cy.get('[aria-label = "Proceed to payment selection"]').click();
-      // Create page object - DeliveryMethodPage
-      //Created
-
       // Select delivery speed Standard Delivery
-      cy.get('#mat-radio-45').click();
+      cy.get('mat-row').contains('Standard Delivery').click();
       // Click Continue button
       cy.get('[aria-label = "Proceed to delivery method selection"]').click();
-      // Create page object - PaymentOptionsPage
-      //Created
-
       // Select card that ends with "5678"
-      //cy.get('.mat-mdc-cell mdc-data-table__cell cdk-cell cdk-column-Number mat-column-Number ng-star-inserted').should('have.value', "************5678");
-      cy.get('#mat-radio-46').click();
+      cy.contains('5678').closest('mat-row').find('mat-radio-button').click();
       // Click Continue button
       cy.get('[aria-label = "Proceed to review"]').click();
-      // Create page object - OrderSummaryPage
-      //Created
-
       // Click on "Place your order and pay"
       cy.get('[aria-label = "Complete your purchase"]').click();
-      // Create page object - OrderCompletionPage
-      //Created
-
-      // Validate confirmation - "Thank you for your purchase!"
+      // Validate confirmation
       cy.get('.confirmation').should('contain.text', 'Thank you for your purchase!');
+    });
 
+    it('Add address', () => {
+      // Click on Account
+      HomePage.accountButton.click();
+      // Click on Orders & Payment
+      cy.get('[aria-label="Show Orders and Payment Menu"]').filter(':visible').click();
+      // Click on My saved addresses
+      cy.get('[aria-label = "Go to saved address page"]').click();
+      // Click on Add New Address
+      SavedAddressesPage.addNewAddressButton.click();
+      // Fill in the necessary information
+      CreateAddressPage.countryField.type('Latvia');
+      CreateAddressPage.nameField.type('Test User');
+      CreateAddressPage.mobileField.type('12345678');
+      CreateAddressPage.zipCodeField.type('LV-1001');
+      CreateAddressPage.addressField.type('Brivibas iela 1');
+      CreateAddressPage.cityField.type('Riga');
+      CreateAddressPage.stateField.type('Riga');
+      // Click Submit button
+      CreateAddressPage.submitButton.click();
+      // Validate that previously added address is visible
+      SavedAddressesPage.addressList.should('contain.text', 'Brivibas iela 1');
+    });
 
+    it('Add payment option', () => {
+      // Click on Account
+      HomePage.accountButton.click();
+      // Click on Orders & Payment
+      cy.get('[aria-label="Show Orders and Payment Menu"]').filter(':visible').click();
+      // Click on My payment options
+      cy.get('[aria-label="Go to saved payment methods page"]').click();
+      // Click Add new card
+      SavedPaymentMethodsPage.addNewCardButton.click();
+      // Fill in Name
+      SavedPaymentMethodsPage.nameField.type('Test User');
+      // Fill in Card Number
+      SavedPaymentMethodsPage.cardNumberField.type('1234567890125678');
+      // Set expiry month to 7
+      SavedPaymentMethodsPage.expiryMonthSelect.select('7');
+      // Set expiry year to 2090
+      SavedPaymentMethodsPage.expiryYearSelect.select('2090');
+      // Click Submit button
+      SavedPaymentMethodsPage.submitButton.click();
+      // Validate that the card shows up in the list
+      SavedPaymentMethodsPage.cardList.should('contain.text', '5678');
     });
 
 
